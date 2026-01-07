@@ -1,48 +1,40 @@
-// import { useState } from "react";
+import { useState } from "react";
+import { sendCommand } from "./api";
 
-// function App() {
-//   const [command, setCommand] = useState("");
-//   const [result, setResult] = useState("");
-//   const [sql, setSql] = useState("");
+function App() {
+  const [command, setCommand] = useState("");
+  const [message, setMessage] = useState("");
+  const [sql, setSql] = useState("");
 
-//   const sendCommand = async () => {
-//     const res = await fetch("http://localhost:5000/ai-command", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({ command })
-//     });
+  const handleSubmit = async () => {
+    const data = await sendCommand(command);
 
-//     const data = await res.json();
+    if (data.error) {
+      setMessage("❌ Error");
+      setSql(data.error);
+    } else {
+      setMessage(data.message);
+      setSql(data.sql);
+    }
+  };
 
-//     if (data.error) {
-//       setResult("❌ Error");
-//       setSql(data.error);
-//     } else {
-//       setResult(data.message);
-//       setSql(data.sql);
-//     }
-//   };
+  return (
+    <div className="container">
+      <h1>AI Database Command System</h1>
 
-//   return (
-//     <div style={{ padding: "30px" }}>
-//       <h2>AI Database Command Website</h2>
+      <input
+        type="text"
+        placeholder="Command likho..."
+        value={command}
+        onChange={(e) => setCommand(e.target.value)}
+      />
 
-//       <input
-//         style={{ width: "400px" }}
-//         placeholder="Command likho..."
-//         value={command}
-//         onChange={(e) => setCommand(e.target.value)}
-//       />
+      <button onClick={handleSubmit}>Create Table</button>
 
-//       <br /><br />
+      <h3>{message}</h3>
+      <pre>{sql}</pre>
+    </div>
+  );
+}
 
-//       <button onClick={sendCommand}>Create Table</button>
-
-//       <h3>{result}</h3>
-
-//       <pre>{sql}</pre>
-//     </div>
-//   );
-// }
-
-// export default App;
+export default App;
